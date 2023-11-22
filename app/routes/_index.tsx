@@ -32,7 +32,7 @@ export async function action({ request }: ActionFunctionArgs) {
     });
   }
 
-  const url = "http://localhost:8080/report/maven";
+  const url = `${process.env.SERVER_BASE_URL}/report/maven`;
   const requestBody = {
     oldPackageName,
     newPackageName,
