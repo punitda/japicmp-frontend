@@ -1,5 +1,5 @@
 import { Link } from "@remix-run/react";
-import { Logo } from "./Logo";
+import { Logo } from "./icons/Logo";
 import { GitHubIcon } from "./icons/GithubIcon";
 
 export function Header() {
