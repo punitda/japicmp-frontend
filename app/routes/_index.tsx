@@ -3,7 +3,8 @@ import {
   type ActionFunctionArgs,
   type MetaFunction,
 } from "@remix-run/node";
-import { useFetcher } from "@remix-run/react";
+import { useFetcher, useNavigate } from "@remix-run/react";
+import { useEffect } from "react";
 
 import { Button } from "~/components/Button";
 import { Header } from "~/components/Header";
@@ -22,8 +23,15 @@ export const meta: MetaFunction = () => {
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
-  const oldPackageName = formData.get("old-library");
-  const newPackageName = formData.get("new-library");
+  const oldPackageName = String(formData.get("old-library"));
+  const newPackageName = String(formData.get("new-library"));
+
+  if (oldPackageName.length == 0 || newPackageName.length == 0) {
+    return json({
+      error: "Please provide valid package names to generate report",
+    });
+  }
+
   const url = "http://localhost:8080/report/maven";
   const requestBody = {
     oldPackageName,
@@ -39,18 +47,39 @@ export async function action({ request }: ActionFunctionArgs) {
       body: JSON.stringify(requestBody),
     });
 
-    const data = await response.text();
-    return data;
+    if (response.status != 201) {
+      return json({
+        error: await response.text(),
+        status: response.status,
+      });
+    }
+
+    return json({
+      reportOutput: await response.text(),
+      status: response.status,
+    });
   } catch (error) {
     console.error("error", error);
-    return json({ error, status: 200 });
+    return json({ error, status: 500 });
   }
+}
+
+interface FormData {
+  reportOutput?: string;
+  error?: string;
 }
 
 export default function Index() {
   const fetcher = useFetcher();
-  const { data: reportOutput } = fetcher;
+  const data = fetcher.data as FormData;
   const isSubmitting = fetcher.state === "submitting";
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (fetcher.state == "idle" && data?.reportOutput) {
+      navigate("/#report-output");
+    }
+  }, [fetcher.state, data?.reportOutput, navigate]);
 
   return (
     <div className="flex w-full flex-col bg-white">
@@ -109,11 +138,14 @@ export default function Index() {
               <Button type="submit">
                 {isSubmitting ? "Generating Report" : "Generate Report"}
               </Button>
+              {data?.error ? (
+                <p className="text-red-400 mt-2">{data.error}</p>
+              ) : null}
             </div>
           </fetcher.Form>
         </section>
 
-        {reportOutput ? (
+        {data?.reportOutput ? (
           <section
             id="report-output"
             className="mx-auto w-11/12 py-12 divide-y divide-gray-200 overflow-auto rounded-lg bg-white shadow-lg"
@@ -123,7 +155,7 @@ export default function Index() {
             </div>
 
             <div
-              dangerouslySetInnerHTML={{ __html: reportOutput }}
+              dangerouslySetInnerHTML={{ __html: data?.reportOutput }}
               className="px-4 py-5 sm:p-6"
             />
           </section>
