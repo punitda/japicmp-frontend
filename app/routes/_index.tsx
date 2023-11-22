@@ -59,7 +59,6 @@ export async function action({ request }: ActionFunctionArgs) {
       status: response.status,
     });
   } catch (error) {
-    console.error("error", error);
     return json({ error, status: 500 });
   }
 }
