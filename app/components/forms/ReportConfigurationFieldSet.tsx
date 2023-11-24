@@ -1,6 +1,6 @@
 export function ReportConfigurationFieldSet() {
   return (
-    <fieldset className="mt-2">
+    <fieldset className="mt-12">
       <legend className="sr-only">Report Configuration</legend>
       <div className="space-y-2">
         <div className="relative flex items-start">

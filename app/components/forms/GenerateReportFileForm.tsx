@@ -71,7 +71,7 @@ export function GenerateReportFileForm({ fetcher, data, isSubmitting }: Props) {
 
       <ReportConfigurationFieldSet />
 
-      <div className="py-4">
+      <div className="pt-8 pb-4">
         <Button type="submit" disabled={isSubmitting || fileSizeError}>
           {isSubmitting ? "Generating Report" : "Generate Report"}
         </Button>

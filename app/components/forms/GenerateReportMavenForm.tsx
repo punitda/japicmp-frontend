@@ -60,19 +60,19 @@ export function GenerateReportMavenForm({
         Ex: com.squareup.okhttp3:okhttp:4.12.0
       </p>{" "}
       <ReportConfigurationFieldSet />
-      <div className="py-4">
+      <div className="pt-8 pb-2">
         <Button type="submit" disabled={isSubmitting}>
           {isSubmitting ? "Generating Report" : "Generate Report"}
         </Button>
         {data?.error ? <p className="text-red-400 mt-2">{data.error}</p> : null}
       </div>
       <div className="text-sm leading-6 text-gray-600">
-        Library not hosted on Maven? Generate report using{" "}
+        Library not hosted on Maven? You can generate report by{" "}
         <div
           onClick={onTabChange}
-          className="font-semibold text-sky-600 inline-block"
+          className="font-semibold text-sky-600 inline-block cursor-pointer"
         >
-          File
+          uploading files
         </div>
       </div>
     </fetcher.Form>
