@@ -10,7 +10,7 @@ Create `.env` file with following config:
 SERVER_BASE_URL=http://localhost:8080
 ```
 
-> Note: Make sure you're running app server on port 8080
+> Note: Make sure you're running BE web server on port 8080
 
 From your terminal:
 
