@@ -103,6 +103,7 @@ export default function Index() {
                 className="block w-full rounded-md border-gray-300 focus:border-sky-500 focus:ring-sky-500"
                 defaultValue={currentTab?.name}
                 onChange={(e) => {
+                  e.preventDefault();
                   setTabs(
                     tabs.map((_tab) => ({
                       ..._tab,
@@ -110,6 +111,7 @@ export default function Index() {
                     }))
                   );
                 }}
+                value={currentTab?.name}
               >
                 {tabs.map((tab) => (
                   <option key={tab.name}>{tab.name}</option>
