@@ -1,5 +1,7 @@
 import type { FetcherWithComponents } from "@remix-run/react";
+import type { MouseEventHandler } from "react";
 import type { ReportFormData } from "~/types";
+
 import { Button } from "../Button";
 import { ReportConfigurationFieldSet } from "./ReportConfigurationFieldSet";
 
@@ -7,12 +9,14 @@ interface Props {
   fetcher: FetcherWithComponents<unknown>;
   data: ReportFormData;
   isSubmitting: boolean;
+  onTabChange: MouseEventHandler<HTMLDivElement>;
 }
 
 export function GenerateReportMavenForm({
   fetcher,
   data,
   isSubmitting,
+  onTabChange,
 }: Props) {
   return (
     <fetcher.Form method="post" className="px-4 py-5 sm:p-6">
@@ -61,6 +65,15 @@ export function GenerateReportMavenForm({
           {isSubmitting ? "Generating Report" : "Generate Report"}
         </Button>
         {data?.error ? <p className="text-red-400 mt-2">{data.error}</p> : null}
+      </div>
+      <div className="text-sm leading-6 text-gray-600">
+        Library not hosted on Maven? Generate report using{" "}
+        <div
+          onClick={onTabChange}
+          className="font-semibold text-sky-600 inline-block"
+        >
+          File
+        </div>
       </div>
     </fetcher.Form>
   );

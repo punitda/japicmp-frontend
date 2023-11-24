@@ -68,6 +68,16 @@ export default function Index() {
 
   const currentTab = tabs.find((tab) => tab.current);
 
+  function onSwitchToFileTab(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    e.preventDefault();
+    setTabs(
+      tabs.map((_tab) => ({
+        ..._tab,
+        current: _tab.name == "File" ? true : false,
+      }))
+    );
+  }
+
   return (
     <div className="flex w-full flex-col bg-white">
       <Header />
@@ -141,6 +151,7 @@ export default function Index() {
               fetcher={fetcher}
               isSubmitting={isSubmitting}
               data={data}
+              onTabChange={onSwitchToFileTab}
             />
           ) : null}
 
