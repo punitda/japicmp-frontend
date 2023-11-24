@@ -5,6 +5,10 @@ import {
   unstable_parseMultipartFormData,
 } from "@remix-run/node";
 import { cloudStorageUploaderHandler } from "./uploader.server";
+import type {
+  GenerateReportRequestBodyFile,
+  GenerateReportRequestBodyMaven,
+} from "~/types";
 
 export async function generateReportUsingFile(request: Request) {
   try {
@@ -18,9 +22,13 @@ export async function generateReportUsingFile(request: Request) {
       uploadHandler
     );
 
-    const generateReportRequestBody = {
-      oldFileKeyName: formData.get("old-artifact"),
-      newFileKeyName: formData.get("new-artifact"),
+    const generateReportRequestBody: GenerateReportRequestBodyFile = {
+      oldFileKeyName: String(formData.get("old-artifact")),
+      newFileKeyName: String(formData.get("new-artifact")),
+      outputOnlyModifications:
+        formData.get("output-only-modified") == "on" ? true : false,
+      outputOnlyBinaryIncompatibleModifications:
+        formData.get("output-only-binary-incompatible") == "on" ? true : false,
     };
 
     const generateReportResponse = await fetch(
@@ -66,9 +74,13 @@ export async function generateReportUsingMaven(request: Request) {
   }
 
   const url = `${process.env.SERVER_BASE_URL}/report/maven`;
-  const requestBody = {
+  const requestBody: GenerateReportRequestBodyMaven = {
     oldPackageName,
     newPackageName,
+    outputOnlyModifications:
+      formData.get("output-only-modified") == "on" ? true : false,
+    outputOnlyBinaryIncompatibleModifications:
+      formData.get("output-only-binary-incompatible") == "on" ? true : false,
   };
 
   try {
