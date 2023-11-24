@@ -1,7 +1,8 @@
 import type { FetcherWithComponents } from "@remix-run/react";
-import type { ReportFormData } from "~/types/ReportFormData";
+import type { ReportFormData } from "~/types";
 import { Button } from "../Button";
 import { useState } from "react";
+import { ReportConfigurationFieldSet } from "./ReportConfigurationFieldSet";
 
 interface Props {
   fetcher: FetcherWithComponents<unknown>;
@@ -67,6 +68,8 @@ export function GenerateReportFileForm({ fetcher, data, isSubmitting }: Props) {
           Only .aar and .jar files are allowed
         </p>
       </div>
+
+      <ReportConfigurationFieldSet />
 
       <div className="py-4">
         <Button type="submit" disabled={isSubmitting || fileSizeError}>

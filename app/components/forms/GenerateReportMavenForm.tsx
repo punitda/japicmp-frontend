@@ -1,6 +1,7 @@
 import type { FetcherWithComponents } from "@remix-run/react";
-import type { ReportFormData } from "~/types/ReportFormData";
+import type { ReportFormData } from "~/types";
 import { Button } from "../Button";
+import { ReportConfigurationFieldSet } from "./ReportConfigurationFieldSet";
 
 interface Props {
   fetcher: FetcherWithComponents<unknown>;
@@ -54,6 +55,7 @@ export function GenerateReportMavenForm({
       <p className="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 mt-1.5 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
         Ex: com.squareup.okhttp3:okhttp:4.12.0
       </p>{" "}
+      <ReportConfigurationFieldSet />
       <div className="py-4">
         <Button type="submit">
           {isSubmitting ? "Generating Report" : "Generate Report"}
