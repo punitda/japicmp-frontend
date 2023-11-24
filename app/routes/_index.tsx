@@ -153,7 +153,7 @@ export default function Index() {
           ) : null}
         </section>
 
-        {data?.reportOutput ? (
+        {data?.reportOutput && !isSubmitting ? (
           <ReportOutput reportOutput={data.reportOutput} />
         ) : null}
       </main>
