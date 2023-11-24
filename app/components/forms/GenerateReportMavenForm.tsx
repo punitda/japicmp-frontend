@@ -57,7 +57,7 @@ export function GenerateReportMavenForm({
       </p>{" "}
       <ReportConfigurationFieldSet />
       <div className="py-4">
-        <Button type="submit">
+        <Button type="submit" disabled={isSubmitting}>
           {isSubmitting ? "Generating Report" : "Generate Report"}
         </Button>
         {data?.error ? <p className="text-red-400 mt-2">{data.error}</p> : null}
