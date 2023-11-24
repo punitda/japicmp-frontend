@@ -2,7 +2,7 @@
 
 [Website](https://japicmp-report.vercel.app/)
 
-Generate Source and Binary compatibility reports between two java/android library versions. Check report before update to newer version of the library. So, you can update it without worrying about the breaking the app.
+Generate Source and Binary compatibility reports between two java/android library versions. Check report before updating to a newer version of the library in your project. So, you can update it without worrying about breaking the app 😄
 
 To know more about what is source and binary compatiblity, you can read [this](https://zsmb.co/maintaining-compatibility-in-kotlin-libraries/) blogpost.
 
