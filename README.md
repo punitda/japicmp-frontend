@@ -23,6 +23,10 @@ npm ci
 npm run dev
 ```
 
+## Deployment
+
+It is deployed on [Vercel](https://vercel.com/)
+
 ## Tech Stack
 
 - [Remix](https://remix.run/)
@@ -30,6 +34,6 @@ npm run dev
 - [TailwindCss](https://tailwindcss.com/)
 - [Typescript](https://www.typescriptlang.org/)
 
-## Deployment
+## License
 
-It is deployed on [Vercel](https://vercel.com/)
+[MIT License](./LICENSE)
