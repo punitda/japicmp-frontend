@@ -1,14 +1,21 @@
-import {
-  json,
-  type ActionFunctionArgs,
-  type MetaFunction,
-} from "@remix-run/node";
-import { useFetcher, useNavigate } from "@remix-run/react";
-import { useEffect } from "react";
+import clsx from "clsx";
+import { useEffect, useState } from "react";
 
-import { Button } from "~/components/Button";
+import { json } from "@remix-run/node";
+import { useFetcher, useNavigate } from "@remix-run/react";
+import {
+  generateReportUsingFile,
+  generateReportUsingMaven,
+} from "~/services/report-generator.server";
+
+import { GenerateReportMavenForm } from "~/components/forms/GenerateReportMavenForm";
+import { GenerateReportFileForm } from "~/components/forms/GenerateReportFileForm";
 import { Header } from "~/components/Header";
 import { Hero } from "~/components/Hero";
+
+import type { ActionFunctionArgs, MetaFunction } from "@remix-run/node";
+import type { ReportFormData } from "~/types";
+import { ReportOutput } from "~/components/ReportOutput";
 
 export const meta: MetaFunction = () => {
   return [
@@ -22,63 +29,54 @@ export const meta: MetaFunction = () => {
 };
 
 export async function action({ request }: ActionFunctionArgs) {
-  const formData = await request.formData();
-  const oldPackageName = String(formData.get("old-library"));
-  const newPackageName = String(formData.get("new-library"));
-
-  if (oldPackageName.length == 0 || newPackageName.length == 0) {
-    return json({
-      error: "Please provide valid package names to generate report",
-    });
+  const contentType = request.headers.get("Content-Type");
+  if (contentType?.includes("application/x-www-form-urlencoded")) {
+    return generateReportUsingMaven(request);
+  } else if (contentType?.includes("multipart/form-data")) {
+    return generateReportUsingFile(request);
   }
-
-  const url = `${process.env.SERVER_BASE_URL}/report/maven`;
-  const requestBody = {
-    oldPackageName,
-    newPackageName,
-  };
-
-  try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(requestBody),
-    });
-
-    if (response.status != 201) {
-      return json({
-        error: await response.text(),
-        status: response.status,
-      });
-    }
-
-    return json({
-      reportOutput: await response.text(),
-      status: response.status,
-    });
-  } catch (error) {
-    return json({ error, status: 500 });
-  }
+  return json({ error: "Unknown request", status: 400 });
 }
 
-interface FormData {
-  reportOutput?: string;
-  error?: string;
+interface Tab {
+  name: "Maven" | "File";
+  current: boolean;
 }
 
 export default function Index() {
   const fetcher = useFetcher();
-  const data = fetcher.data as FormData;
+  const data = fetcher.data as ReportFormData;
   const isSubmitting = fetcher.state === "submitting";
   const navigate = useNavigate();
+
+  const [tabs, setTabs] = useState<Tab[]>([
+    {
+      name: "Maven",
+      current: true,
+    },
+    {
+      name: "File",
+      current: false,
+    },
+  ]);
 
   useEffect(() => {
     if (fetcher.state == "idle" && data?.reportOutput) {
       navigate("/#report-output");
     }
   }, [fetcher.state, data?.reportOutput, navigate]);
+
+  const currentTab = tabs.find((tab) => tab.current);
+
+  function onSwitchToFileTab(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    e.preventDefault();
+    setTabs(
+      tabs.map((_tab) => ({
+        ..._tab,
+        current: _tab.name == "File" ? true : false,
+      }))
+    );
+  }
 
   return (
     <div className="flex w-full flex-col bg-white">
@@ -87,77 +85,89 @@ export default function Index() {
         <Hero />
         <section
           id="generate"
-          className="divide-y divide-gray-200 overflow-hidden rounded-lg bg-white shadow-lg lg:w-1/2 w-4/5 mx-auto mt-6 mb-20"
+          className="divide-yoverflow-hidden rounded-lg bg-white shadow-lg lg:w-1/2 w-4/5 mx-auto mt-6 mb-20"
         >
           <div className="px-4 py-5 sm:px-6">
             <p className="text-gray-900 text-2xl font-semibold">
               Generate Report
             </p>
           </div>
-          <fetcher.Form method="post" className="px-4 py-5 sm:p-6">
-            <label
-              htmlFor="old-library"
-              className="block text-md font-medium leading-6 text-gray-900"
-            >
-              Old Library
-            </label>
-            <div className="mt-2">
-              <input
-                type="text"
-                name="old-library"
-                id="old-library"
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
-                placeholder="<groupId>:<artifactId>:<version>"
-                aria-describedby="package name"
-              />
+          <div>
+            <div className="sm:hidden px-4 sm:px-6">
+              <label htmlFor="tabs" className="sr-only">
+                Select a tab
+              </label>
+              <select
+                id="tabs"
+                name="tabs"
+                className="block w-full rounded-md border-gray-300 focus:border-sky-500 focus:ring-sky-500"
+                defaultValue={currentTab?.name}
+                onChange={(e) => {
+                  e.preventDefault();
+                  setTabs(
+                    tabs.map((_tab) => ({
+                      ..._tab,
+                      current: _tab.name == e.target.value ? true : false,
+                    }))
+                  );
+                }}
+                value={currentTab?.name}
+              >
+                {tabs.map((tab) => (
+                  <option key={tab.name}>{tab.name}</option>
+                ))}
+              </select>
             </div>
-            <p className="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 mt-1.5 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
-              Ex: com.squareup.okhttp3:okhttp:4.11.0
-            </p>
-            <label
-              htmlFor="new-library"
-              className="block text-md font-medium leading-6 text-gray-900 mt-3"
-            >
-              New Library
-            </label>
-            <div className="mt-2">
-              <input
-                type="text"
-                name="new-library"
-                id="new-library"
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6"
-                placeholder="<groupId>:<artifactId>:<version>"
-                aria-describedby="package name"
-              />
+            <div className="hidden sm:block px-4 sm:px-6">
+              <div className="border-b border-gray-200">
+                <nav className="-mb-px flex" aria-label="Tabs">
+                  {tabs.map((tab) => (
+                    <div
+                      key={tab.name}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setTabs(
+                          tabs.map((_tab) => ({
+                            ..._tab,
+                            current: _tab.name == tab.name ? true : false,
+                          }))
+                        );
+                      }}
+                      className={clsx(
+                        tab.current
+                          ? "border-sky-500 text-sky-600"
+                          : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700",
+                        "w-1/4 border-b-2 py-4 px-1 text-center text-sm font-medium"
+                      )}
+                      aria-current={tab.current ? "page" : undefined}
+                    >
+                      {tab.name}
+                    </div>
+                  ))}
+                </nav>
+              </div>
             </div>
-            <p className="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 mt-1.5 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
-              Ex: com.squareup.okhttp3:okhttp:4.12.0
-            </p>{" "}
-            <div className="py-4">
-              <Button type="submit">
-                {isSubmitting ? "Generating Report" : "Generate Report"}
-              </Button>
-              {data?.error ? (
-                <p className="text-red-400 mt-2">{data.error}</p>
-              ) : null}
-            </div>
-          </fetcher.Form>
+          </div>
+          {currentTab?.name == "Maven" ? (
+            <GenerateReportMavenForm
+              fetcher={fetcher}
+              isSubmitting={isSubmitting}
+              data={data}
+              onTabChange={onSwitchToFileTab}
+            />
+          ) : null}
+
+          {currentTab?.name == "File" ? (
+            <GenerateReportFileForm
+              fetcher={fetcher}
+              isSubmitting={isSubmitting}
+              data={data}
+            />
+          ) : null}
         </section>
 
-        {data?.reportOutput ? (
-          <section
-            id="report-output"
-            className="mx-auto w-11/12 py-12 divide-y divide-gray-200 overflow-auto rounded-lg bg-white shadow-lg"
-          >
-            <div className="px-4 py-5 sm:px-6">
-              <p className="text-gray-900 text-2xl font-semibold">Report</p>
-            </div>
-
-            <div
-              dangerouslySetInnerHTML={{ __html: data?.reportOutput }}
-              className="px-4 py-5 sm:p-6"
-            />
-          </section>
+        {data?.reportOutput && !isSubmitting ? (
+          <ReportOutput reportOutput={data.reportOutput} />
         ) : null}
       </main>
     </div>
