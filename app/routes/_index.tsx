@@ -1,11 +1,13 @@
 import {
   json,
-  type ActionFunctionArgs,
-  type MetaFunction,
   unstable_parseMultipartFormData,
-  UploadHandler,
   unstable_composeUploadHandlers,
   unstable_createMemoryUploadHandler,
+} from "@remix-run/node";
+import type {
+  UploadHandler,
+  ActionFunctionArgs,
+  MetaFunction,
 } from "@remix-run/node";
 import { useFetcher, useNavigate } from "@remix-run/react";
 import clsx from "clsx";
@@ -27,14 +29,13 @@ export const meta: MetaFunction = () => {
 };
 
 export async function action({ request }: ActionFunctionArgs) {
-  return generateReportUsingFile(request);
-  const formData = await request.formData();
-  const reportType = formData.get("reportType");
-  if (reportType == "Maven") {
-    return generateReportUsingMaven(formData);
-  } else if (reportType == "File") {
+  const contentType = request.headers.get("Content-Type");
+  if (contentType?.includes("application/x-www-form-urlencoded")) {
+    return generateReportUsingMaven(request);
+  } else if (contentType?.includes("multipart/form-data")) {
     return generateReportUsingFile(request);
   }
+  return json({ error: "Unknown request", status: 400 });
 }
 
 const cloudStorageUploaderHandler: UploadHandler = async ({
@@ -92,7 +93,6 @@ async function generateReportUsingFile(request: Request) {
   try {
     const uploadHandler = unstable_composeUploadHandlers(
       cloudStorageUploaderHandler,
-      // parse everything else into memory
       unstable_createMemoryUploadHandler()
     );
 
@@ -139,7 +139,8 @@ async function generateReportUsingFile(request: Request) {
   }
 }
 
-async function generateReportUsingMaven(formData: globalThis.FormData) {
+async function generateReportUsingMaven(request: Request) {
+  const formData = await request.formData();
   const oldPackageName = String(formData.get("old-library"));
   const newPackageName = String(formData.get("new-library"));
 
