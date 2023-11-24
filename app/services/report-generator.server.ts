@@ -20,9 +20,7 @@ export async function generateReportUsingFile(request: Request) {
 
     const generateReportRequestBody = {
       oldFileKeyName: formData.get("old-artifact"),
-      oldVersion: formData.get("old-library-version"),
       newFileKeyName: formData.get("new-artifact"),
-      newVersion: formData.get("new-library-version"),
     };
 
     const generateReportResponse = await fetch(
