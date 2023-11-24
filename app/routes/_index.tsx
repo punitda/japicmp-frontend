@@ -1,21 +1,18 @@
-import {
-  json,
-  unstable_parseMultipartFormData,
-  unstable_composeUploadHandlers,
-  unstable_createMemoryUploadHandler,
-} from "@remix-run/node";
-import type {
-  UploadHandler,
-  ActionFunctionArgs,
-  MetaFunction,
-} from "@remix-run/node";
+import type { ActionFunctionArgs, MetaFunction } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import { useFetcher, useNavigate } from "@remix-run/react";
+
 import clsx from "clsx";
 import { useEffect, useState } from "react";
 
 import { Button } from "~/components/Button";
 import { Header } from "~/components/Header";
 import { Hero } from "~/components/Hero";
+
+import {
+  generateReportUsingFile,
+  generateReportUsingMaven,
+} from "~/services/report-generator.server";
 
 export const meta: MetaFunction = () => {
   return [
@@ -36,149 +33,6 @@ export async function action({ request }: ActionFunctionArgs) {
     return generateReportUsingFile(request);
   }
   return json({ error: "Unknown request", status: 400 });
-}
-
-const cloudStorageUploaderHandler: UploadHandler = async ({
-  filename,
-  data: fileStream,
-}) => {
-  return await uploadToR2Storage(fileStream, filename);
-};
-
-const uploadToR2Storage = async (
-  fileStream: AsyncIterable<Uint8Array>,
-  filename?: string
-) => {
-  if (!filename) return;
-  const url = `${process.env.SERVER_BASE_URL}/presigned`;
-  const requestBody = {
-    fileName: filename,
-    fileType: "application/java-archive",
-  };
-
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(requestBody),
-  });
-
-  if (response.status != 201) throw Error("Error generating presiged url");
-  const { preSignedUrl, objectKey } = await response.json();
-  console.log("preSignedUrl", preSignedUrl);
-  console.log("objectKey", objectKey);
-
-  const fileData = [];
-  for await (const x of fileStream) {
-    fileData.push(x);
-  }
-
-  const file = new File(fileData, filename, {
-    type: "application/java-archive",
-  });
-  const uploadResponse = await fetch(preSignedUrl, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/java-archive",
-    },
-    body: file,
-  });
-
-  if (uploadResponse.status == 200) return objectKey;
-  throw Error("Unable to upload");
-};
-
-async function generateReportUsingFile(request: Request) {
-  try {
-    const uploadHandler = unstable_composeUploadHandlers(
-      cloudStorageUploaderHandler,
-      unstable_createMemoryUploadHandler()
-    );
-
-    const formData = await unstable_parseMultipartFormData(
-      request,
-      uploadHandler
-    );
-
-    for (const pair of formData.entries()) {
-      console.log(pair[0] + ", " + pair[1]);
-    }
-
-    const generateReportRequestBody = {
-      oldFileKeyName: formData.get("old-artifact"),
-      oldVersion: formData.get("old-library-version"),
-      newFileKeyName: formData.get("new-artifact"),
-      newVersion: formData.get("new-library-version"),
-    };
-
-    const generateReportResponse = await fetch(
-      `${process.env.SERVER_BASE_URL}/report/file`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(generateReportRequestBody),
-      }
-    );
-
-    if (generateReportResponse.status != 201) {
-      return json({
-        error: await generateReportResponse.text(),
-        status: generateReportResponse.status,
-      });
-    }
-
-    return json({
-      reportOutput: await generateReportResponse.text(),
-      status: generateReportResponse.status,
-    });
-  } catch (error) {
-    return json({ error, status: 500 });
-  }
-}
-
-async function generateReportUsingMaven(request: Request) {
-  const formData = await request.formData();
-  const oldPackageName = String(formData.get("old-library"));
-  const newPackageName = String(formData.get("new-library"));
-
-  if (oldPackageName.length == 0 || newPackageName.length == 0) {
-    return json({
-      error: "Please provide valid package names to generate report",
-    });
-  }
-
-  const url = `${process.env.SERVER_BASE_URL}/report/maven`;
-  const requestBody = {
-    oldPackageName,
-    newPackageName,
-  };
-
-  try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(requestBody),
-    });
-
-    if (response.status != 201) {
-      return json({
-        error: await response.text(),
-        status: response.status,
-      });
-    }
-
-    return json({
-      reportOutput: await response.text(),
-      status: response.status,
-    });
-  } catch (error) {
-    return json({ error, status: 500 });
-  }
 }
 
 interface FormData {
