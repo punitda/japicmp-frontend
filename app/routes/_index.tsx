@@ -14,7 +14,7 @@ import { Header } from "~/components/Header";
 import { Hero } from "~/components/Hero";
 
 import type { ActionFunctionArgs, MetaFunction } from "@remix-run/node";
-import type { ReportFormData } from "~/types/ReportFormData";
+import type { ReportFormData } from "~/types";
 import { ReportOutput } from "~/components/ReportOutput";
 
 export const meta: MetaFunction = () => {
