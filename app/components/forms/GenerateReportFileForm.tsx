@@ -1,6 +1,7 @@
 import type { FetcherWithComponents } from "@remix-run/react";
 import type { ReportFormData } from "~/types/ReportFormData";
 import { Button } from "../Button";
+import { useState } from "react";
 
 interface Props {
   fetcher: FetcherWithComponents<unknown>;
@@ -9,6 +10,19 @@ interface Props {
 }
 
 export function GenerateReportFileForm({ fetcher, data, isSubmitting }: Props) {
+  const [fileSizeError, setFileSizeError] = useState(false);
+
+  function onChange(e: React.ChangeEvent<HTMLInputElement>) {
+    e.preventDefault();
+    const file = e.target?.files?.[0];
+    // Don't allow file size above 5 Mb. We might change it later, if required.
+    if (file && file.size > 5 * 1024 * 1024) {
+      setFileSizeError(true);
+    } else {
+      setFileSizeError(false);
+    }
+  }
+
   return (
     <fetcher.Form
       method="post"
@@ -27,9 +41,7 @@ export function GenerateReportFileForm({ fetcher, data, isSubmitting }: Props) {
           type="file"
           name="old-artifact"
           accept=".aar, .jar"
-          onChange={(e) => {
-            e.preventDefault();
-          }}
+          onChange={onChange}
         />
         <p className="text-xs leading-5 text-gray-400 mt-1">
           Only .aar and .jar files are allowed
@@ -93,10 +105,13 @@ export function GenerateReportFileForm({ fetcher, data, isSubmitting }: Props) {
         Ex: 1.2.2
       </p>
       <div className="py-4">
-        <Button type="submit">
+        <Button type="submit" disabled={isSubmitting || fileSizeError}>
           {isSubmitting ? "Generating Report" : "Generate Report"}
         </Button>
         {data?.error ? <p className="text-red-400 mt-2">{data.error}</p> : null}
+        {fileSizeError ? (
+          <p className="text-red-400 mt-2">The file size cannot exceed 5 Mb</p>
+        ) : null}
       </div>
     </fetcher.Form>
   );

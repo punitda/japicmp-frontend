@@ -16,7 +16,11 @@ export function Button({
   className,
   ...props
 }: ButtonProps) {
-  className = clsx(variantStyles[variant], className);
+  className = clsx(
+    variantStyles[variant],
+    className,
+    props.disabled ? "opacity-50 cursor-not-allowed" : ""
+  );
 
   return (
     <button className={className} {...props}>
