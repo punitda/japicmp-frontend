@@ -1,6 +1,10 @@
 # Japicmp Report Generator
 
-- [Website](https://japicmp-report.vercel.app/)
+[Website](https://japicmp-report.vercel.app/)
+
+Generate Source and Binary compatibility reports between two java/android library versions. Check report before updating to a newer version of the library in your project. So, you can update it without worrying about breaking the app 😄
+
+To know more about what is source and binary compatiblity, you can read [this](https://zsmb.co/maintaining-compatibility-in-kotlin-libraries/) blogpost.
 
 ## Local Development
 
@@ -19,6 +23,10 @@ npm ci
 npm run dev
 ```
 
+## Deployment
+
+It is deployed on [Vercel](https://vercel.com/)
+
 ## Tech Stack
 
 - [Remix](https://remix.run/)
@@ -26,6 +34,6 @@ npm run dev
 - [TailwindCss](https://tailwindcss.com/)
 - [Typescript](https://www.typescriptlang.org/)
 
-## Deployment
+## License
 
-It is deployed on [Vercel](https://vercel.com/)
+[MIT License](./LICENSE)
