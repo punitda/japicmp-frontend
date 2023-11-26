@@ -71,13 +71,22 @@ export function GenerateReportFileForm({ fetcher, data, isSubmitting }: Props) {
 
       <ReportConfigurationFieldSet />
 
-      <div className="pt-8 pb-4">
-        <Button type="submit" disabled={isSubmitting || fileSizeError}>
-          {isSubmitting ? "Generating Report" : "Generate Report"}
-        </Button>
-        {data?.error ? <p className="text-red-400 mt-2">{data.error}</p> : null}
-        {fileSizeError ? (
-          <p className="text-red-400 mt-2">The file size cannot exceed 5 Mb</p>
+      <div className="pt-8 pb-2 flex items-center gap-4">
+        <div>
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Generating Report" : "Generate Report"}
+          </Button>
+          {data?.error ? (
+            <p className="text-red-400 mt-2">{data.error}</p>
+          ) : null}
+        </div>
+        {data?.reportOutput?.preSignedUrl ? (
+          <a
+            href={data.reportOutput?.preSignedUrl}
+            className="font-semibold text-sky-600 inline-block cursor-pointer"
+          >
+            View Report
+          </a>
         ) : null}
       </div>
     </fetcher.Form>
