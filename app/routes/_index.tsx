@@ -95,6 +95,7 @@ export default function Index() {
                 id="tabs"
                 name="tabs"
                 className="block w-full rounded-md border-gray-300 focus:border-sky-500 focus:ring-sky-500"
+                disabled={isSubmitting}
                 onChange={(e) => {
                   e.preventDefault();
                   setTabs(
@@ -119,6 +120,7 @@ export default function Index() {
                       key={tab.name}
                       onClick={(e) => {
                         e.preventDefault();
+                        if (isSubmitting) return;
                         setTabs(
                           tabs.map((_tab) => ({
                             ..._tab,
@@ -130,6 +132,7 @@ export default function Index() {
                         tab.current
                           ? "border-sky-500 text-sky-600"
                           : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700",
+                        isSubmitting ? "opacity-50 cursor-not-allowed" : "",
                         "w-1/4 border-b-2 py-4 px-1 text-center text-sm font-medium"
                       )}
                       aria-current={tab.current ? "page" : undefined}

@@ -4,6 +4,7 @@ import type { ReportFormData } from "~/types";
 
 import { Button } from "../Button";
 import { ReportConfigurationFieldSet } from "./ReportConfigurationFieldSet";
+import clsx from "clsx";
 
 interface Props {
   fetcher: FetcherWithComponents<unknown>;
@@ -86,7 +87,10 @@ export function GenerateReportMavenForm({
         Library not hosted on Maven? You can generate report by{" "}
         <div
           onClick={onTabChange}
-          className="font-semibold text-sky-600 inline-block cursor-pointer"
+          className={clsx(
+            "font-semibold text-sky-600 inline-block cursor-pointer",
+            isSubmitting ? "cursor-not-allowed opacity-50" : "cursor-pointer"
+          )}
         >
           uploading files
         </div>
