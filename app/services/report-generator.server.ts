@@ -50,7 +50,7 @@ export async function generateReportUsingFile(request: Request) {
     }
 
     return json({
-      reportOutput: await generateReportResponse.text(),
+      reportOutput: await generateReportResponse.json(),
       status: generateReportResponse.status,
     });
   } catch (error) {
@@ -100,7 +100,7 @@ export async function generateReportUsingMaven(request: Request) {
     }
 
     return json({
-      reportOutput: await response.text(),
+      reportOutput: await response.json(),
       status: response.status,
     });
   } catch (error) {
