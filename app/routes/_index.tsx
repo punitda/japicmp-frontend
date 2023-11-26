@@ -63,6 +63,7 @@ export default function Index() {
 
   function onSwitchToFileTab(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     e.preventDefault();
+    if (isSubmitting) return;
     setTabs(
       tabs.map((_tab) => ({
         ..._tab,
