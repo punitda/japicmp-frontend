@@ -86,7 +86,7 @@ export function GenerateReportFileForm({ fetcher, data, isSubmitting }: Props) {
             </p>
           ) : null}
         </div>
-        {data?.reportOutput?.preSignedUrl ? (
+        {data?.reportOutput?.preSignedUrl && !isSubmitting ? (
           <a
             href={data.reportOutput?.preSignedUrl}
             className="font-semibold text-sky-600 inline-block cursor-pointer"
