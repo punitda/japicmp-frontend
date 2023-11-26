@@ -74,7 +74,7 @@ export function GenerateReportFileForm({ fetcher, data, isSubmitting }: Props) {
 
       <div className="pt-8 pb-2 flex items-center gap-4">
         <div>
-          <Button type="submit" disabled={isSubmitting}>
+          <Button type="submit" disabled={isSubmitting || fileSizeError}>
             {isSubmitting ? "Generating Report" : "Generate Report"}
           </Button>
           {data?.error ? (
