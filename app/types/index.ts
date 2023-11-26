@@ -1,6 +1,10 @@
 export interface ReportFormData {
-  reportOutput?: string;
+  reportOutput?: ReportOutput;
   error?: string;
+}
+
+export interface ReportOutput {
+  preSignedUrl: string;
 }
 
 export interface GenerateReportRequestBodyFile {

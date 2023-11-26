@@ -47,7 +47,6 @@ export default function Index() {
   const fetcher = useFetcher();
   const data = fetcher.data as ReportFormData;
   const isSubmitting = fetcher.state === "submitting";
-  const navigate = useNavigate();
 
   const [tabs, setTabs] = useState<Tab[]>([
     {
@@ -60,16 +59,11 @@ export default function Index() {
     },
   ]);
 
-  useEffect(() => {
-    if (fetcher.state == "idle" && data?.reportOutput) {
-      navigate("/#report-output");
-    }
-  }, [fetcher.state, data?.reportOutput, navigate]);
-
   const currentTab = tabs.find((tab) => tab.current);
 
   function onSwitchToFileTab(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     e.preventDefault();
+    if (isSubmitting) return;
     setTabs(
       tabs.map((_tab) => ({
         ..._tab,
@@ -101,7 +95,7 @@ export default function Index() {
                 id="tabs"
                 name="tabs"
                 className="block w-full rounded-md border-gray-300 focus:border-sky-500 focus:ring-sky-500"
-                defaultValue={currentTab?.name}
+                disabled={isSubmitting}
                 onChange={(e) => {
                   e.preventDefault();
                   setTabs(
@@ -126,6 +120,7 @@ export default function Index() {
                       key={tab.name}
                       onClick={(e) => {
                         e.preventDefault();
+                        if (isSubmitting) return;
                         setTabs(
                           tabs.map((_tab) => ({
                             ..._tab,
@@ -137,6 +132,7 @@ export default function Index() {
                         tab.current
                           ? "border-sky-500 text-sky-600"
                           : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700",
+                        isSubmitting ? "opacity-50 cursor-not-allowed" : "",
                         "w-1/4 border-b-2 py-4 px-1 text-center text-sm font-medium"
                       )}
                       aria-current={tab.current ? "page" : undefined}
@@ -165,10 +161,6 @@ export default function Index() {
             />
           ) : null}
         </section>
-
-        {data?.reportOutput && !isSubmitting ? (
-          <ReportOutput reportOutput={data.reportOutput} />
-        ) : null}
       </main>
     </div>
   );
