@@ -47,7 +47,6 @@ export default function Index() {
   const fetcher = useFetcher();
   const data = fetcher.data as ReportFormData;
   const isSubmitting = fetcher.state === "submitting";
-  const navigate = useNavigate();
 
   const [tabs, setTabs] = useState<Tab[]>([
     {
@@ -59,12 +58,6 @@ export default function Index() {
       current: false,
     },
   ]);
-
-  useEffect(() => {
-    if (fetcher.state == "idle" && data?.reportOutput) {
-      navigate("/#report-output");
-    }
-  }, [fetcher.state, data?.reportOutput, navigate]);
 
   const currentTab = tabs.find((tab) => tab.current);
 
@@ -165,10 +158,6 @@ export default function Index() {
             />
           ) : null}
         </section>
-
-        {data?.reportOutput && !isSubmitting ? (
-          <ReportOutput reportOutput={data.reportOutput} />
-        ) : null}
       </main>
     </div>
   );
