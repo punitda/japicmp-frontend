@@ -31,27 +31,10 @@ export function GenerateReportFileForm({ fetcher, data, isSubmitting }: Props) {
       encType="multipart/form-data"
     >
       <input type="hidden" name="reportType" value="File" />
-      <label
-        htmlFor="old-library-file"
-        className="block text-md font-medium leading-6 text-gray-900"
-      >
-        Old Library File
-      </label>
-      <div className="mt-2">
-        <input
-          type="file"
-          name="old-artifact"
-          accept=".aar, .jar"
-          onChange={onChange}
-        />
-        <p className="text-xs leading-5 text-gray-400 mt-1">
-          Only .aar and .jar files are allowed
-        </p>
-      </div>
 
       <label
         htmlFor="new-library"
-        className="block text-md font-medium leading-6 text-gray-900 mt-3"
+        className="block text-md font-medium leading-6 text-gray-900"
       >
         New Library File
       </label>
@@ -69,6 +52,24 @@ export function GenerateReportFileForm({ fetcher, data, isSubmitting }: Props) {
         </p>
       </div>
 
+      <label
+        htmlFor="old-library-file"
+        className="block text-md font-medium leading-6 text-gray-900 mt-3"
+      >
+        Old Library File
+      </label>
+      <div className="mt-2">
+        <input
+          type="file"
+          name="old-artifact"
+          accept=".aar, .jar"
+          onChange={onChange}
+        />
+        <p className="text-xs leading-5 text-gray-400 mt-1">
+          Only .aar and .jar files are allowed
+        </p>
+      </div>
+
       <ReportConfigurationFieldSet />
 
       <div className="pt-8 pb-2 flex items-center gap-4">
@@ -78,6 +79,11 @@ export function GenerateReportFileForm({ fetcher, data, isSubmitting }: Props) {
           </Button>
           {data?.error ? (
             <p className="text-red-400 mt-2">{data.error}</p>
+          ) : null}
+          {fileSizeError ? (
+            <p className="text-red-400 mt-2">
+              The file size cannot exceed 5 Mb
+            </p>
           ) : null}
         </div>
         {data?.reportOutput?.preSignedUrl ? (
