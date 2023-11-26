@@ -94,7 +94,6 @@ export default function Index() {
                 id="tabs"
                 name="tabs"
                 className="block w-full rounded-md border-gray-300 focus:border-sky-500 focus:ring-sky-500"
-                defaultValue={currentTab?.name}
                 onChange={(e) => {
                   e.preventDefault();
                   setTabs(
