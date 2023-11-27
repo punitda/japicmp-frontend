@@ -1,8 +1,8 @@
 import clsx from "clsx";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { json } from "@remix-run/node";
-import { useFetcher, useNavigate } from "@remix-run/react";
+import { useFetcher } from "@remix-run/react";
 import {
   generateReportUsingFile,
   generateReportUsingMaven,
@@ -15,7 +15,6 @@ import { Hero } from "~/components/Hero";
 
 import type { ActionFunctionArgs, MetaFunction } from "@remix-run/node";
 import type { ReportFormData } from "~/types";
-import { ReportOutput } from "~/components/ReportOutput";
 
 export const meta: MetaFunction = () => {
   return [
