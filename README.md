@@ -4,7 +4,10 @@
 
 Generate Source and Binary compatibility reports between two java/android library versions. Check report before updating to a newer version of the library in your project. So, you can update it without worrying about breaking the app 😄
 
-To know more about what is source and binary compatiblity, you can read [this](https://zsmb.co/maintaining-compatibility-in-kotlin-libraries/) blogpost.
+To know more about what is source and binary compatiblity, you can read following blog posts:
+
+- [Source, Binary and backward compatibility to rule them all](https://proandroiddev.com/source-binary-and-backward-compatibility-rule-them-all-61d3d358582e)
+- [Maintaining compatibility in Kotlin libraries](https://zsmb.co/maintaining-compatibility-in-kotlin-libraries/).
 
 ## Local Development
 
