@@ -15,6 +15,7 @@ import { Hero } from "~/components/Hero";
 
 import type { ActionFunctionArgs, MetaFunction } from "@remix-run/node";
 import type { ReportFormData } from "~/types";
+import { Faqs } from "~/components/Faqs";
 
 export const meta: MetaFunction = () => {
   return [
@@ -160,6 +161,7 @@ export default function Index() {
             />
           ) : null}
         </section>
+        <Faqs />
       </main>
     </div>
   );
