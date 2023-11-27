@@ -1,16 +1,14 @@
-import type { FetcherWithComponents } from "@remix-run/react";
-import type { ReportFormData } from "~/types";
 import { Button } from "../Button";
 import { useState } from "react";
 import { ReportConfigurationFieldSet } from "./ReportConfigurationFieldSet";
+import type { GenerarteReportProps } from "~/types";
+import { GenerateReportButton } from "../GenerateReportButton";
 
-interface Props {
-  fetcher: FetcherWithComponents<unknown>;
-  data: ReportFormData;
-  isSubmitting: boolean;
-}
-
-export function GenerateReportFileForm({ fetcher, data, isSubmitting }: Props) {
+export function GenerateReportFileForm({
+  fetcher,
+  data,
+  isSubmitting,
+}: GenerarteReportProps) {
   const [fileSizeError, setFileSizeError] = useState(false);
 
   function onChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -48,7 +46,7 @@ export function GenerateReportFileForm({ fetcher, data, isSubmitting }: Props) {
           }}
         />
         <p className="text-xs leading-5 text-gray-400 mt-1">
-          Only .aar and .jar files are allowed
+          Only .aar and .jar files can be uploaded
         </p>
       </div>
 
@@ -66,7 +64,7 @@ export function GenerateReportFileForm({ fetcher, data, isSubmitting }: Props) {
           onChange={onChange}
         />
         <p className="text-xs leading-5 text-gray-400 mt-1">
-          Only .aar and .jar files are allowed
+          Only .aar and .jar files can be uploaded
         </p>
       </div>
 
@@ -74,13 +72,11 @@ export function GenerateReportFileForm({ fetcher, data, isSubmitting }: Props) {
 
       <div className="pt-8 pb-2 flex items-center gap-4">
         <div>
-          <Button type="submit" disabled={isSubmitting || fileSizeError}>
-            {isSubmitting ? "Generating Report" : "Generate Report"}
-          </Button>
-          {data?.error ? (
+          <GenerateReportButton isSubmitting={isSubmitting} />
+          {data?.error && !isSubmitting ? (
             <p className="text-red-400 mt-2">{data.error}</p>
           ) : null}
-          {fileSizeError ? (
+          {fileSizeError && !isSubmitting ? (
             <p className="text-red-400 mt-2">
               The file size cannot exceed 5 Mb
             </p>
