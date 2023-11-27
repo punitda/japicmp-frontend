@@ -10,6 +10,9 @@ import type {
   GenerateReportRequestBodyMaven,
 } from "~/types";
 
+const internalServerErrorMessage =
+  "Uh-Oh! Looks like we messed up. Please try again!";
+
 export async function generateReportUsingFile(request: Request) {
   try {
     const uploadHandler = unstable_composeUploadHandlers(
@@ -54,8 +57,9 @@ export async function generateReportUsingFile(request: Request) {
       status: generateReportResponse.status,
     });
   } catch (error) {
+    console.error(`error generating report using file action: ${error}`);
     return json({
-      error: "Uh-Oh! Looks like we messed up. Please try again!",
+      error: internalServerErrorMessage,
       status: 500,
     });
   }
@@ -104,6 +108,10 @@ export async function generateReportUsingMaven(request: Request) {
       status: response.status,
     });
   } catch (error) {
-    return json({ error, status: 500 });
+    console.error(`error generating report using maven action: ${error}`);
+    return json({
+      error: internalServerErrorMessage,
+      status: 500,
+    });
   }
 }
