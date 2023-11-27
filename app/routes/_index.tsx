@@ -12,6 +12,7 @@ import type { ActionFunctionArgs, MetaFunction } from "@remix-run/node";
 import type { ReportFormData } from "~/types";
 import { Faqs } from "~/components/Faqs";
 import { GenerateReport } from "~/components/GenerateReport";
+import { Footer } from "~/components/Footer";
 
 export const meta: MetaFunction = () => {
   return [
@@ -50,6 +51,7 @@ export default function Index() {
           fetcher={fetcher}
         />
         <Faqs />
+        <Footer />
       </main>
     </div>
   );
