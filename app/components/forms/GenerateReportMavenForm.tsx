@@ -23,7 +23,7 @@ export function GenerateReportMavenForm({
         htmlFor="new-library"
         className="block text-md font-medium leading-6 text-gray-900"
       >
-        New Library
+        New Version
       </label>
       <div className="mt-2">
         <input
@@ -43,7 +43,7 @@ export function GenerateReportMavenForm({
         htmlFor="old-library"
         className="block text-md font-medium leading-6 text-gray-900 mt-3"
       >
-        Old Library
+        Old Version
       </label>
       <div className="mt-2">
         <input
