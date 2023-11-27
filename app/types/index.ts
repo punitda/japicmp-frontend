@@ -20,3 +20,8 @@ export interface GenerateReportRequestBodyMaven {
   outputOnlyModifications: boolean;
   outputOnlyBinaryIncompatibleModifications: boolean;
 }
+
+export interface Faq {
+  question: string;
+  answer: () => JSX.Element;
+}
