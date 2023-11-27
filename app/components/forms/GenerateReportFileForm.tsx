@@ -34,7 +34,7 @@ export function GenerateReportFileForm({
         htmlFor="new-library"
         className="block text-md font-medium leading-6 text-gray-900"
       >
-        New Library File
+        New Version
       </label>
       <div className="mt-2">
         <input
@@ -54,7 +54,7 @@ export function GenerateReportFileForm({
         htmlFor="old-library-file"
         className="block text-md font-medium leading-6 text-gray-900 mt-3"
       >
-        Old Library File
+        Old Version
       </label>
       <div className="mt-2">
         <input

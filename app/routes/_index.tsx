@@ -1,5 +1,11 @@
 import { json } from "@remix-run/node";
-import { useFetcher } from "@remix-run/react";
+import {
+  Links,
+  Meta,
+  Scripts,
+  useFetcher,
+  useRouteError,
+} from "@remix-run/react";
 import {
   generateReportUsingFile,
   generateReportUsingMaven,
@@ -24,6 +30,42 @@ export const meta: MetaFunction = () => {
     },
   ];
 };
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+  console.error(error);
+  return (
+    <html>
+      <head>
+        <title>Oh Snap!</title>
+        <Meta />
+        <Links />
+      </head>
+      <body>
+        <main className="grid min-h-full place-items-center bg-white px-6 py-24 sm:py-32 lg:px-8">
+          <div className="text-center">
+            <p className="text-base font-semibold text-sky-600">Aw, Snap!</p>
+            <h1 className="mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+              Application Error
+            </h1>
+            <p className="mt-6 text-base leading-7 text-gray-600">
+              Sorry, we've messed up. Please try again
+            </p>
+            <div className="mt-10 flex items-center justify-center gap-x-6">
+              <a
+                href="/"
+                className="rounded-md bg-sky-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-sky-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600"
+              >
+                Go back home
+              </a>
+            </div>
+          </div>
+        </main>
+        <Scripts />
+      </body>
+    </html>
+  );
+}
 
 export async function action({ request }: ActionFunctionArgs) {
   const contentType = request.headers.get("Content-Type");
