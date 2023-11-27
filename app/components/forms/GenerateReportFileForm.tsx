@@ -46,7 +46,7 @@ export function GenerateReportFileForm({
           }}
         />
         <p className="text-xs leading-5 text-gray-400 mt-1">
-          Only .aar and .jar files are allowed
+          Only .aar and .jar files can be uploaded
         </p>
       </div>
 
@@ -64,7 +64,7 @@ export function GenerateReportFileForm({
           onChange={onChange}
         />
         <p className="text-xs leading-5 text-gray-400 mt-1">
-          Only .aar and .jar files are allowed
+          Only .aar and .jar files can be uploaded
         </p>
       </div>
 
@@ -72,13 +72,11 @@ export function GenerateReportFileForm({
 
       <div className="pt-8 pb-2 flex items-center gap-4">
         <div>
-          <Button type="submit" disabled={isSubmitting || fileSizeError}>
-            {isSubmitting ? "Generating Report" : "Generate Report"}
-          </Button>
-          {data?.error ? (
+          <GenerateReportButton isSubmitting={isSubmitting} />
+          {data?.error && !isSubmitting ? (
             <p className="text-red-400 mt-2">{data.error}</p>
           ) : null}
-          {fileSizeError ? (
+          {fileSizeError && !isSubmitting ? (
             <p className="text-red-400 mt-2">
               The file size cannot exceed 5 Mb
             </p>

@@ -63,10 +63,8 @@ export function GenerateReportMavenForm({
 
       <div className="pt-8 pb-2 flex items-center gap-4">
         <div>
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Generating Report" : "Generate Report"}
-          </Button>
-          {data?.error ? (
+          <GenerateReportButton isSubmitting={isSubmitting} />
+          {data?.error && !isSubmitting ? (
             <p className="text-red-400 mt-2">{data.error}</p>
           ) : null}
         </div>
