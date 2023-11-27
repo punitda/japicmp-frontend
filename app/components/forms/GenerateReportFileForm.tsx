@@ -1,16 +1,14 @@
-import type { FetcherWithComponents } from "@remix-run/react";
-import type { ReportFormData } from "~/types";
 import { Button } from "../Button";
 import { useState } from "react";
 import { ReportConfigurationFieldSet } from "./ReportConfigurationFieldSet";
+import type { GenerarteReportProps } from "~/types";
+import { GenerateReportButton } from "../GenerateReportButton";
 
-interface Props {
-  fetcher: FetcherWithComponents<unknown>;
-  data: ReportFormData;
-  isSubmitting: boolean;
-}
-
-export function GenerateReportFileForm({ fetcher, data, isSubmitting }: Props) {
+export function GenerateReportFileForm({
+  fetcher,
+  data,
+  isSubmitting,
+}: GenerarteReportProps) {
   const [fileSizeError, setFileSizeError] = useState(false);
 
   function onChange(e: React.ChangeEvent<HTMLInputElement>) {

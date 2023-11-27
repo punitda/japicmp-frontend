@@ -1,15 +1,12 @@
-import type { FetcherWithComponents } from "@remix-run/react";
 import type { MouseEventHandler } from "react";
-import type { ReportFormData } from "~/types";
+import type { GenerarteReportProps } from "~/types";
 
 import { Button } from "../Button";
 import { ReportConfigurationFieldSet } from "./ReportConfigurationFieldSet";
 import clsx from "clsx";
+import { GenerateReportButton } from "../GenerateReportButton";
 
-interface Props {
-  fetcher: FetcherWithComponents<unknown>;
-  data: ReportFormData;
-  isSubmitting: boolean;
+interface Props extends GenerarteReportProps {
   onTabChange: MouseEventHandler<HTMLDivElement>;
 }
 
