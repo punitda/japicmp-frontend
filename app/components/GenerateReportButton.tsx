@@ -12,7 +12,7 @@ export function GenerateReportButton({ isSubmitting }: Props) {
       </Button>
       {isSubmitting ? (
         <svg
-          className="animate-spin mr-1 h-4 w-4 text-white absolute right-1"
+          className="animate-spin mr-1 h-4 w-4 text-sky-900 absolute right-1"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
