@@ -85,6 +85,8 @@ export function GenerateReportFileForm({
         {data?.reportOutput?.preSignedUrl && !isSubmitting ? (
           <a
             href={data.reportOutput?.preSignedUrl}
+            target="_blank"
+            rel="noopener noreferrer"
             className="font-semibold text-sky-600 inline-block cursor-pointer"
           >
             View Report
