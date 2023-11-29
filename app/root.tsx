@@ -1,4 +1,6 @@
 import type { LinksFunction } from "@remix-run/node";
+import { Analytics } from "@vercel/analytics/react";
+
 import {
   Links,
   LiveReload,
@@ -24,6 +26,7 @@ export default function App() {
         <Links />
       </head>
       <body className="flex flex-col min-h-screen">
+        <Analytics />
         <Outlet />
         <ScrollRestoration />
         <Scripts />
