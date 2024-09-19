@@ -28,7 +28,7 @@ npm run dev
 
 ## Deployment
 
-It is deployed on [Vercel](https://vercel.com/)
+It is deployed on [Fly.io](https://fly.io/)
 
 ## Tech Stack
 
